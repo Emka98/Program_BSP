@@ -1,7 +1,8 @@
 import os
 import pandas as pd
 from analiza_trendu.analiza_trendu import make_prediction
-
+from biegunowaAnallityczna.biegunowa import calbiegunowa
+from obliczeniaMasy.masscalculator import masscal
 #Set work dir
 dir_work = os.getcwd()
 
@@ -20,18 +21,17 @@ dir_result = os.path.join(dir_work,dir_result)
 
 #Place for results alizy trendów
 analize_trendu_filename = "AnalizaTrendow.txt"
-analize_trendu_result = os.path.join(dir_result,analize_trendu_filename)
+result = os.path.join(dir_result,analize_trendu_filename)
 
 #Prediction of parameters
 prediction_year = 2030
 
-#Set Swet/Sref stosunek powierzchni omywanej Swet do powierzchni odniesienia Sw
-Swet_Sref_ratio  =  2.5
-Kmax = 17
-oswalda = 0.8
+#Biegunowa analityczna
+AR = 16
+Kmax = 32
 
-make_prediction(df, prediction_year, dir_plots_path, analize_trendu_result)
-
-
-
-
+make_prediction(df, prediction_year, dir_plots_path, result)
+calbiegunowa(AR, Kmax, result)
+mass_filename = "mass.txt"
+mass_filename_result = os.path.join(dir_result,mass_filename)
+masscal(mass_filename_result)
