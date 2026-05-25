@@ -22,12 +22,16 @@ Czmax = 1.35
 Cz = Czmax / 1.1
 kat_Wzn = 10
 
-cisnienie_dynamiczne = lambda v : 1.225 * v**2 / 2
-gradient_wznoszenia = lambda kat: math.sin(math.radians(kat))
+v_min = 42
+v_crus = 50
+v_max = 62
 
 s_to = s_l = 500
 
-# Ladowanie 
+cisnienie_dynamiczne = lambda v : 1.225 * v**2 / 2
+gradient_wznoszenia = lambda kat: math.sin(math.radians(kat))
+
+# Ladowanie
 # ws < ladowanie [n/m^2]
 ladowanie = (sigma * Czmax * (s_l - 122)) / 0.75
 s = math.ceil(mass_L/ladowanie)
@@ -36,15 +40,6 @@ s = math.ceil(mass_L/ladowanie)
 # Przepisy ASTM F3179/F3179M-24a 
 licznik = 2 * mass_TO
 mianownik = s * Cz * 1.255
-v_min = math.sqrt(licznik / mianownik)
-print(v_min)
-print(f"Prędkość minimalna {v_min} m/s")
-
-v_max = 2.5 * v_min
-v_crus = v_max * 0.6
-v_climb = v_max * 0.5
-print(f"Prędkość wznoszenia {v_climb} m/s")
-print(f"Prędkość przelotowa {v_crus} m/s")
 
 # Start [N/N] <= T/W
 def start(ws):
@@ -60,6 +55,7 @@ plt.fill_between(ws_range, start_dane, 0, color='g', alpha=0.2)
 
 # Wznoszenie [N/N] <= T/W
 wznoszenie = gradient_wznoszenia(kat_Wzn) * 2 * math.sqrt(Cxo / (math.pi * ar * e))
+plt.axhline(wznoszenie, xmin=0, xmax=10000, label='wznoszenie', color='r')
 
 # inne warunki [n/m^2] <= WS
 inne_warunki = lambda v : cisnienie_dynamiczne(v) * math.sqrt(math.pi * ar * e * Cxo)
@@ -78,14 +74,16 @@ def prawidlowy_zakret(ws, v):
     TW_max = (((psi_dot * v) / g) ** 2 + 1) * (ws / (cisnienie_dynamiczne(v) * math.pi * ar * e)) + (cisnienie_dynamiczne(v) * Cxo / ws)
     return TW_max
 
-prawidlowy_zakret_dane = [prawidlowy_zakret(x,v_min) for x in ws_range]
-plt.plot(ws_range, prawidlowy_zakret_dane, label='zakręt' ,color = 'b')
-plt.fill_between(ws_range, prawidlowy_zakret_dane, 0, color='b', alpha=0.2)
+prawidlowy_zakret_dane_vmax = [prawidlowy_zakret(x,v_crus) for x in ws_range]
+plt.plot(ws_range, prawidlowy_zakret_dane_vmax, label='prawidłowy zakręt' ,color = 'y')
+plt.fill_between(ws_range, prawidlowy_zakret_dane_vmax, 0, color='y', alpha=0.2)
 
+#Zasięg
+zasieg = lambda v: cisnienie_dynamiczne(v) * math.sqrt(math.pi * ar * e * Cxo)
+zasieg = zasieg(v_min)
+plt.vlines(x=zasieg, ymin=1, ymax=wznoszenie, label='zasieg', color='r')
 
-
-#pred
-plt.ylim(top=1)
+plt.ylim(0,1)
 plt.xlabel('Obciążenie powierzchni W/S $[N/m^2]$', fontsize=11)
 plt.ylabel('Stosunek ciągu do ciężaru T/W $[N/N]$', fontsize=11)
 plt.title('Optymalne obciążenie powierzchni i obciążenia ciągu (mocy)', fontsize=12, fontweight='bold', pad=15)

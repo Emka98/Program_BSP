@@ -12,4 +12,4 @@ Ladowanie: 0.995
 Masa obliczona 880.9646310548405 
 Masa założona: 881  -0.03536894515946187
 weight_ratio: 0.308019324334373
-Masa do lądowania: 624.9952596805824
+Masa do lądowania: 24.9952596805824

@@ -12,7 +12,7 @@ def masscal(path):
     c = -0.13441672738453134
     a = 1.5098473319833845
     
-    #0,45 [kg/kWh] jednostkowe zużycie paliwa dla silników śmigłowych [kg/Ws]
+    #0,5 [kg/kWh] jednostkowe zużycie paliwa dla silników śmigłowych [kg/Ws]
     fuel_consumption = 0.5/3600000
     
     # [m/s^2] przyspieszenie ziemskie
