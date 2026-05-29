@@ -17,3 +17,6 @@ print(f"Silnik {moc_w_kwatach} kW")
 #Lycoming IO-390
 s = m.ceil(mass * g / ws)
 print(f"Optymalna powierchnia nośna: {s}")
+
+
+print(f"Ciag silnika {(n * moc_w_watach) / v} N")

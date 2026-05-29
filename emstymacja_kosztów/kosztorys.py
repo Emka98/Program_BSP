@@ -1,13 +1,28 @@
 import math
 
-mass = 625
+# 737-300 data
+mass = 32_800
 M_max = We = mass * 2.20462262
-np = 500
-v_max_ms = 62
+np = 12_409
+v_max_ms = 243.333
 v_max = v_max_ms * 1.944
-T_max = 145_000
-Tem_Prz_Tur = 1200
-Rp = 2
+T_max_kN = 86700
+T_max = T_max_kN * 224.8089431
+Tem_Prz_Tur_stC = 1450
+Tem_Prz_Tur = (Tem_Prz_Tur_stC * (9/5)) + 491.67
+Rp = 20
+
+# Moje dane
+# mass = 880
+# M_max = We = mass * 2.20462262
+# np = 1000
+# v_max_ms = 62
+# v_max = v_max_ms * 1.944
+# T_max_kN = 2_756.99
+# T_max = T_max_kN * 224.8089431
+# Tem_Prz_Tur_stC = 900
+# Tem_Prz_Tur = (Tem_Prz_Tur_stC * (9/5)) + 491.67
+# Rp = 2
 
 sum_1970 = []
 sum_1986 = []
@@ -67,12 +82,12 @@ c5_1986 = 2228.0
 Cen_1970 = math.ceil(c1_1970 * T_max**c2_1970)
 Cen_1986 = math.ceil(c1_1986 * (c2_1986 * T_max + c3_1986 * M_max + c4_1986 * Tem_Prz_Tur - c5_1986))
 
-sum_1986.append(Cen_1986)
-sum_1970.append(Cen_1970)
+# sum_1986.append(Cen_1986)
+# sum_1970.append(Cen_1970)
 
 wspolny_text = "Cena silnika i awioniki: "
-text_1970 += wspolny_text + str(Cd_1970) + " USD" + "\n"
-text_1986 += wspolny_text + str(Cd_1986) + " USD" + "\n"
+text_1970 += wspolny_text + str(Cen_1970) + " USD" + "\n"
+text_1986 += wspolny_text + str(Cen_1986) + " USD" + "\n"
 
 # Robocizna [h]
 c1_1970 = 20.348
@@ -165,24 +180,58 @@ text_1970 += wspolny_text + str(Cft_1970) + " USD" + "\n"
 text_1986 += wspolny_text + str(Cft_1986) + " USD" + "\n"
 
 # Stawki godzinowe [USD]
-# c1_1970 = 16.0
-# c2_1970 = 11.50
-# c3_1970 = 10.0
-# c4_1970 = 10.0
+c1_1970 = 16.0
+c2_1970 = 11.50
+c3_1970 = 10.0
+c4_1970 = 10.0
 
-# c1_1986 = 59.10
-# c2_1986 = 61.70
-# c3_1986 = 55.40
-# c4_1986 = 50.10
+c1_1986 = 59.10
+c2_1986 = 61.70
+c3_1986 = 55.40
+c4_1986 = 50.10
 
-# Cp_1970 = c1_1970 * We**c2_1970 * v_max**c3_1970 * np**c4_1970
-# Cp_1986 = c1_1986 * We**c2_1986 * v_max**c3_1986 * np**c4_1986
+Ce_1970 = He_1970 * c1_1970
+sum_1970.append(Ce_1970)
+Cml_1970 = Hml_1970 * c2_1970
+sum_1970.append(Cml_1970)
+Ct_1970 = Ht_1970 * c3_1970
+sum_1970.append(Ct_1970)
+Coc_1970 = Hqc_1970 * c4_1970
+sum_1970.append(Coc_1970)
 
-# wspolny_text = "Stawki godzinowe: "
-# text_1970 += wspolny_text + str(Cft_1970) + " h" + "\n"
-# text_1986 += wspolny_text + str(Cft_1986) + " h" + "\n"
+Ce_1986 = He_1986 * c1_1986
+sum_1986.append(Ce_1986)
+Cml_1986 = Hml_1986 * c2_1986
+sum_1986.append(Cml_1986)
+Ct_1986 = Ht_1986 * c3_1986
+sum_1986.append(Ct_1986)
+Coc_1986 = Hqc_1986 * c4_1986
+sum_1986.append(Coc_1986)
+
+# Obliczenie kosztów jednostkowych [USD]
+cost_1970 = sum(sum_1970)/np
+cost_1986 = sum(sum_1986)/np
+
+wspolny_text = "Szacowany koszt jednostkowy: "
+text_1970 += wspolny_text + str(cost_1970) + " USD" + "\n"
+text_1986 += wspolny_text + str(cost_1986) + " USD" + "\n"
+
+a = math.ceil((cost_1986 - cost_1970) / (1986 - 1970))
+b = math.ceil(cost_1970 - a*1970)
+
+# esty_cost = lambda year: a*year + b
+
+# print(f"y = {a}x + {b}")
+# print(f"{esty_cost(2030)} = {a}*2030 + {b}")
 
 print(f"Rok 1970: \n{text_1970}")
 print(f"Rok 1986:\n{text_1986}")
 
-print(sum(sum_1970))
+CPI_1970_to_2030 = 9.35
+CPI_1986_to_2030 = 3.25
+
+real_cost_70_in_2030 = math.ceil((cost_1970 * CPI_1970_to_2030))
+real_cost_86_in_2030 = math.ceil((cost_1986 * CPI_1986_to_2030))
+
+print(f"Koszt proj. 1970 w cenach 2030: {real_cost_70_in_2030} USD")
+print(f"Koszt proj. 1986 w cenach 2030: {real_cost_86_in_2030} USD")
